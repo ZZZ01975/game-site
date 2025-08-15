@@ -1,26 +1,73 @@
+:root{
+  --bg:#0b1220;
+  --panel:#0f172a;
+  --panel2:#0b1324;
+  --card:#101a2f;
+  --line:#1e2a44;
+  --text:#e6e8ef;
+  --muted:#9aa4b2;
+  --accent:#2b74ff;
+}
 
-:root{--bg:#0b1220;--card:#121a2b;--text:#e6e8ef;--muted:#9aa4b2;--accent:#2b74ff}
 *{box-sizing:border-box}
-body{margin:0;font-family:system-ui,-apple-system,Segoe UI,Roboto,PingFang SC,Microsoft YaHei,sans-serif;background:var(--bg);color:var(--text)}
-a{color:var(--accent);text-decoration:none}
-a:hover{text-decoration:underline}
-.container{max-width:1100px;margin:0 auto;padding:20px}
-.header{display:flex;align-items:center;justify-content:space-between;gap:12px}
-.brand{font-size:22px;font-weight:700}
-.nav a{margin-left:12px}
-.card{background:var(--card);border-radius:16px;padding:20px;box-shadow:0 10px 30px rgba(0,0,0,.25);margin:14px 0}
-.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(220px,1fr));gap:16px}
-.game-card{background:#0e1729;border-radius:14px;padding:12px}
-.game-card img{width:100%;height:130px;object-fit:cover;border-radius:10px}
-.game-card h3{margin:10px 0 6px;font-size:16px}
-.muted{color:var(--muted);font-size:13px}
-.canvas-wrap{background:#000;border-radius:12px;overflow:hidden}
-.badge{display:inline-block;font-size:12px;padding:2px 8px;border-radius:999px;background:#1b2440;color:#dfe7ff;margin-right:6px}
-.breadcrumb{font-size:12px;color:var(--muted);margin-bottom:12px}
-/* 统一 iframe 自适应（以后如果嵌入第三方 H5） */
-.canvas-wrap iframe { width:100%; height:620px; border:0; }
+html,body{height:100%}
+body{
+  margin:0;
+  font-family:system-ui,-apple-system,Segoe UI,Roboto,PingFang SC,Microsoft YaHei,sans-serif;
+  color:var(--text);
+  background:radial-gradient(1200px 800px at 20% -10%,#15213a,transparent), var(--bg);
+}
 
-/* 简单的“分享区”容器（后面想加分享按钮时用） */
-.share { display:flex; gap:10px; flex-wrap:wrap; margin-top:10px; }
-.share a { font-size:12px; padding:6px 10px; border-radius:999px; background:#1b2440; color:#dfe7ff; }
-.share a:hover { filter:brightness(1.15); }
+/* 容器与导航 */
+.container{max-width:1100px;margin:0 auto;padding:20px}
+.header{
+  display:flex;align-items:center;justify-content:space-between;gap:12px;
+  background:linear-gradient(180deg,var(--panel) 0%, var(--panel2) 100%);
+  border:1px solid var(--line); border-radius:16px; padding:14px 18px; margin:10px 0 16px;
+  box-shadow:0 10px 30px rgba(0,0,0,.35);
+}
+.brand{font-size:22px;font-weight:800;letter-spacing:.3px}
+.nav a{margin-left:14px;color:var(--accent);text-decoration:none;font-weight:600}
+.nav a:hover{text-decoration:underline}
+
+/* 卡片与排版 */
+.card{
+  background:linear-gradient(180deg,var(--panel) 0%, var(--panel2) 100%);
+  border:1px solid var(--line); border-radius:16px; padding:20px;
+  box-shadow:0 12px 40px rgba(0,0,0,.35); margin:16px 0;
+}
+.card h1,.card h2{margin:0 0 12px 0}
+.card p{margin:6px 0; color:var(--muted)}
+
+.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(230px,1fr));gap:16px}
+
+/* 游戏卡片 */
+.game-card{
+  display:block; text-decoration:none; color:inherit;
+  background:#0e1729; border:1px solid var(--line); border-radius:14px; padding:12px;
+  transition:transform .15s ease, box-shadow .15s ease, border-color .15s ease;
+}
+.game-card:hover{transform:translateY(-3px); box-shadow:0 12px 28px rgba(0,0,0,.35); border-color:#2a3a63}
+.game-card img{
+  width:100%; height:140px; object-fit:cover; border-radius:10px; display:block;
+  background:#0b1020;
+}
+.game-card h3{margin:10px 0 6px; font-size:16px}
+.muted{color:var(--muted); font-size:13px}
+
+/* 面包屑与徽章 */
+.breadcrumb{font-size:12px;color:var(--muted);margin-bottom:12px}
+.badge{display:inline-block;font-size:12px;padding:3px 10px;border-radius:999px;background:#1b2440;color:#dfe7ff;margin-right:6px}
+
+/* 内置演示与 iframe */
+.canvas-wrap{background:#000;border-radius:12px;overflow:hidden}
+.canvas-wrap iframe{width:100%;height:620px;border:0}
+
+/* 页脚 */
+.footer{opacity:.75;font-size:12px;text-align:center;margin:26px 0}
+
+/* 小屏优化 */
+@media (max-width:640px){
+  .nav{display:flex;flex-wrap:wrap;gap:8px}
+  .canvas-wrap iframe{height:420px}
+}
