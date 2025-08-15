@@ -1,0 +1,50 @@
+
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1"/>
+  <title>US Game Hub</title>
+  <link rel="stylesheet" href="/assets/style.css"/>
+</head>
+<body>
+  <div class="container">
+    <div class="header">
+      <div class="brand">US Game Hub</div>
+      <div class="nav">
+        <a href="/">首页</a>
+        <a href="/games/legend.html">传奇 H5（内置演示）</a>
+        <a href="/games/myfirstgame.html">示例：我的第一款游戏</a>
+      </div>
+    </div>
+
+    <div class="card">
+      <h1>欢迎</h1>
+      <p class="muted">这是一个可以直接部署到 GitHub Pages 的多页面游戏站。每个游戏是 /games/ 下的一个独立 HTML 页面。</p>
+    </div>
+
+    <div class="grid">
+      <a class="game-card" href="/games/legend.html">
+        <img src="https://images.unsplash.com/photo-1489278353717-f64c6ee8a4d2?auto=format&fit=crop&w=1200&q=60" alt="Legend Demo"/>
+        <h3>传奇 H5（内置演示）</h3>
+        <div class="muted">无需外链，内置可玩的 Canvas 演示（WASD/方向键移动，J 攻击，K 闪避）</div>
+      </a>
+      <a class="game-card" href="/games/myfirstgame.html">
+        <img src="https://images.unsplash.com/photo-1511512578047-dfb367046420?auto=format&fit=crop&w=1200&q=60" alt="My First Game"/>
+        <h3>示例：我的第一款游戏</h3>
+        <div class="muted">用于演示如何新增一个 IFrame 游戏页面</div>
+      </a>
+    </div>
+
+    <div class="card">
+      <h2>如何新增一个游戏？（不写代码）</h2>
+      <ol>
+        <li>复制 <code>/games/myfirstgame.html</code> 为 <code>mygame.html</code>。</li>
+        <li>把标题、简介、<code>&lt;iframe src=&quot;...&quot;&gt;</code> 的链接换成你的。</li>
+        <li>在首页 <code>index.html</code> 复制一张卡片，链接到 <code>/games/mygame.html</code>。</li>
+        <li>提交到 GitHub，等待 Pages 自动发布。</li>
+      </ol>
+    </div>
+  </div>
+</body>
+</html>

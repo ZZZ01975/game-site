@@ -1,0 +1,72 @@
+
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1"/>
+  <title>传奇 H5（内置演示） - US Game Hub</title>
+  <link rel="stylesheet" href="/assets/style.css"/>
+</head>
+<body>
+  <div class="container">
+    <div class="breadcrumb"><a href="/">首页</a> / RPG / 传奇 H5（内置演示）</div>
+    <div class="card">
+      <h1>传奇 H5（内置演示）</h1>
+      <p class="muted">按 <b>WASD</b> 或方向键移动，<b>J</b> 攻击，<b>K</b> 闪避。此演示仅用于验证“网页端可玩”。</p>
+      <div class="canvas-wrap">
+        <canvas id="game" width="960" height="540"></canvas>
+      </div>
+      <p style="margin-top:10px">
+        <span class="badge">RPG</span><span class="badge">演示</span><span class="badge">H5</span>
+      </p>
+    </div>
+  </div>
+<script>
+const c = document.getElementById('game');
+const ctx = c.getContext('2d');
+const W = c.width, H = c.height;
+let player = {x: W/2, y: H/2, r: 18, color:'#4ade80', vx:0, vy:0, speed:3, attacking:false, dodge:0};
+let keys = {}; addEventListener('keydown', e=>keys[e.key.toLowerCase()]=true); addEventListener('keyup', e=>keys[e.key.toLowerCase()]=false);
+let monsters = Array.from({length:8},()=>({x:Math.random()*W,y:Math.random()*H,r:14+Math.random()*10,color:'#60a5fa'}));
+let particles = [];
+function clamp(v, a, b){ return Math.max(a, Math.min(b, v)); }
+function update(){
+  let ax=0, ay=0;
+  if(keys['w']||keys['arrowup']) ay-=1;
+  if(keys['s']||keys['arrowdown']) ay+=1;
+  if(keys['a']||keys['arrowleft']) ax-=1;
+  if(keys['d']||keys['arrowright']) ax+=1;
+  const len=Math.hypot(ax,ay)||1, spd=player.speed*(player.dodge>0?2.2:1);
+  player.vx=(ax/len)*spd; player.vy=(ay/len)*spd;
+  player.x=clamp(player.x+player.vx, player.r, W-player.r);
+  player.y=clamp(player.y+player.vy, player.r, H-player.r);
+  if(keys['j']&&!player.attacking){ player.attacking=true; setTimeout(()=>player.attacking=false,180); }
+  if(keys['k']&&player.dodge<=0){ player.dodge=20; } if(player.dodge>0) player.dodge--;
+  monsters.forEach(m=>{ const dx=player.x-m.x, dy=player.y-m.y, d=Math.hypot(dx,dy)||1; const f=0.4; m.x+=(dx/d)*f; m.y+=(dy/d)*f; });
+  if(player.attacking){
+    const ang=Math.atan2(player.vy||0, player.vx||1);
+    monsters=monsters.filter(m=>{ const dx=m.x-player.x, dy=m.y-player.y; const d=Math.hypot(dx,dy); const a=Math.atan2(dy,dx);
+      const inArc=Math.abs(((a-ang+Math.PI*3)%(Math.PI*2))-Math.PI)<Math.PI/3;
+      if(d<60 && inArc){ for(let i=0;i<12;i++){ particles.push({x:m.x,y:m.y,vx:(Math.random()-0.5)*4,vy:(Math.random()-0.5)*4,life:30,color:'#f472b6'}); } return false; }
+      return true;
+    });
+    while(monsters.length<8){ monsters.push({x:Math.random()*W,y:Math.random()*H,r:14+Math.random()*10,color:'#60a5fa'}); }
+  }
+  particles.forEach(p=>{ p.x+=p.vx; p.y+=p.vy; p.life--; }); particles=particles.filter(p=>p.life>0);
+}
+function draw(){
+  ctx.fillStyle='#0b1020'; ctx.fillRect(0,0,W,H);
+  ctx.strokeStyle='#111827'; ctx.lineWidth=1; ctx.globalAlpha=0.6;
+  for(let x=0;x<W;x+=40){ ctx.beginPath(); ctx.moveTo(x,0); ctx.lineTo(x,H); ctx.stroke(); }
+  for(let y=0;y<H;y+=40){ ctx.beginPath(); ctx.moveTo(0,y); ctx.lineTo(W,y); ctx.stroke(); }
+  ctx.globalAlpha=1;
+  monsters.forEach(m=>{ ctx.fillStyle=m.color; ctx.beginPath(); ctx.arc(m.x,m.y,m.r,0,Math.PI*2); ctx.fill(); });
+  ctx.fillStyle=player.dodge>0?'#22d3ee':player.color; ctx.beginPath(); ctx.arc(player.x,player.y,player.r,0,Math.PI*2); ctx.fill();
+  if(player.attacking){ const ang=Math.atan2(player.vy||0, player.vx||1); ctx.strokeStyle='#fef08a'; ctx.lineWidth=6;
+    ctx.beginPath(); ctx.arc(player.x,player.y,42, ang-Math.PI/3, ang+Math.PI/3); ctx.stroke(); }
+  particles.forEach(p=>{ ctx.fillStyle=p.color; ctx.fillRect(p.x,p.y,2,2); });
+}
+function loop(){ update(); draw(); requestAnimationFrame(loop); } loop();
+</script>
+</body>
+</html>
