@@ -7,19 +7,10 @@
   <link rel="icon" href="favicon.svg" type="image/svg+xml"/>
   <link rel="stylesheet" href="assets/style.css"/>
 </head>
-  <script src="assets/nav.js"></script>
 <body>
-  <div id="site-header"></div>
   <div class="container">
-    <div class="header">
-      <div class="brand">US Game Hub</div>
-      <div class="nav">
-        <a href="./">首页</a>
-        <a href="rpg.html">RPG</a>
-        <a href="action.html">动作</a>
-        <a href="casual.html">休闲</a>
-      </div>
-    </div>
+
+    <!-- 导航自动插入 -->
 
     <div class="card"><h1>动作</h1><p class="muted">动作类游戏列表</p></div>
 
@@ -35,13 +26,13 @@
 
     <div class="footer">© 2025 US Game Hub</div>
   </div>
-  <button id="backTop" style="position:fixed;right:18px;bottom:24px;display:none;
-  background:#2b74ff;border:none;color:#fff;padding:10px 14px;border-radius:999px;
-  box-shadow:0 8px 20px rgba(43,116,255,.35);cursor:pointer">↑ 顶部</button>
-<script>
-  const bt=document.getElementById('backTop');
-  window.addEventListener('scroll',()=>{ bt.style.display = window.scrollY>300 ? 'block':'none'; });
-  bt.addEventListener('click',()=>window.scrollTo({top:0,behavior:'smooth'}));
-</script>
+
+  <script src="assets/nav.js"></script>
+  <button id="backTop" style="position:fixed;right:18px;bottom:24px;display:none;background:#2b74ff;border:none;color:#fff;padding:10px 14px;border-radius:999px;box-shadow:0 8px 20px rgba(43,116,255,.35);cursor:pointer">↑ 顶部</button>
+  <script>
+    const bt=document.getElementById('backTop');
+    window.addEventListener('scroll',()=>{ bt.style.display = window.scrollY>300 ? 'block':'none'; });
+    bt.addEventListener('click',()=>window.scrollTo({top:0,behavior:'smooth'}));
+  </script>
 </body>
 </html>
