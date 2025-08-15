@@ -32,5 +32,13 @@
 
     <div class="footer">© 2025 US Game Hub</div>
   </div>
+  <button id="backTop" style="position:fixed;right:18px;bottom:24px;display:none;
+  background:#2b74ff;border:none;color:#fff;padding:10px 14px;border-radius:999px;
+  box-shadow:0 8px 20px rgba(43,116,255,.35);cursor:pointer">↑ 顶部</button>
+<script>
+  const bt=document.getElementById('backTop');
+  window.addEventListener('scroll',()=>{ bt.style.display = window.scrollY>300 ? 'block':'none'; });
+  bt.addEventListener('click',()=>window.scrollTo({top:0,behavior:'smooth'}));
+</script>
 </body>
 </html>
