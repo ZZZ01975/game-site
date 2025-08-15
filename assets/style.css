@@ -17,3 +17,10 @@ a:hover{text-decoration:underline}
 .canvas-wrap{background:#000;border-radius:12px;overflow:hidden}
 .badge{display:inline-block;font-size:12px;padding:2px 8px;border-radius:999px;background:#1b2440;color:#dfe7ff;margin-right:6px}
 .breadcrumb{font-size:12px;color:var(--muted);margin-bottom:12px}
+/* 统一 iframe 自适应（以后如果嵌入第三方 H5） */
+.canvas-wrap iframe { width:100%; height:620px; border:0; }
+
+/* 简单的“分享区”容器（后面想加分享按钮时用） */
+.share { display:flex; gap:10px; flex-wrap:wrap; margin-top:10px; }
+.share a { font-size:12px; padding:6px 10px; border-radius:999px; background:#1b2440; color:#dfe7ff; }
+.share a:hover { filter:brightness(1.15); }
