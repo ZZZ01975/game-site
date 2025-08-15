@@ -1,0 +1,101 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1"/>
+  <title>游戏 - US Game Hub</title>
+  <link rel="icon" href="favicon.svg" type="image/svg+xml"/>
+  <link rel="stylesheet" href="assets/style.css"/>
+</head>
+<body>
+  <div class="container">
+    <!-- 导航由 nav.js 自动插入 -->
+
+    <div id="breadcrumb" class="breadcrumb"></div>
+
+    <div class="card">
+      <h1 id="title">加载中…</h1>
+      <p class="muted" id="desc"></p>
+      <div class="canvas-wrap" id="wrap"></div>
+      <div id="fallback" class="muted" style="margin-top:8px"></div>
+      <div class="share" id="share" style="margin-top:10px"></div>
+      <div class="muted" id="tags" style="margin-top:8px"></div>
+    </div>
+
+    <div class="footer">© 2025 US Game Hub</div>
+  </div>
+
+  <script src="assets/nav.js"></script>
+  <script>
+    async function main(){
+      const params = new URLSearchParams(location.search);
+      const id = params.get('id');
+      const res = await fetch('data/games.json');
+      const list = await res.json();
+      const g = list.find(x=>x.id===id);
+
+      const title = document.getElementById('title');
+      const desc = document.getElementById('desc');
+      const wrap = document.getElementById('wrap');
+      const tags = document.getElementById('tags');
+      const crumb = document.getElementById('breadcrumb');
+      const share = document.getElementById('share');
+      const fallback = document.getElementById('fallback');
+
+      if(!g){ title.textContent='未找到该游戏'; return; }
+
+      title.textContent = g.title;
+      desc.textContent = g.type==='canvas'
+        ? '按 WASD/方向键移动（或鼠标/触控），这是内置演示。'
+        : 'IFrame 嵌入示例（第三方 H5）。';
+      crumb.innerHTML = `<a href="./">首页</a> / ${g.category} / ${g.title}`;
+
+      // 可玩区域
+      if(g.type==='iframe' && g.iframe){
+        wrap.innerHTML = `<iframe id="gameframe" src="${g.iframe}" referrerpolicy="no-referrer" sandbox="allow-scripts allow-same-origin"></iframe>`;
+        // 兜底：给出“新窗口打开”链接
+        const a = document.createElement('a');
+        a.href = g.iframe; a.target = '_blank';
+        a.textContent = '如果无法加载，请点此在新窗口打开';
+        fallback.appendChild(a);
+      }else{
+        // 内置两个 demo（legend/arena），其余默认用 legend
+        const html = (g.id==='arena') ? arenaSrc() : legendSrc();
+        wrap.innerHTML = `<iframe srcdoc="${html.replace(/"/g,'&quot;')}"></iframe>`;
+      }
+
+      // 标签
+      tags.innerHTML = (g.tags||[]).map(t=>`<span class="badge">${t}</span>`).join('');
+
+      // 分享
+      const self = encodeURIComponent(location.href);
+      share.innerHTML = [
+        `<a target="_blank" href="https://twitter.com/intent/tweet?text=${encodeURIComponent(g.title)}&url=${self}">Twitter</a>`,
+        `<a target="_blank" href="https://www.facebook.com/sharer/sharer.php?u=${self}">Facebook</a>`,
+        `<a target="_blank" href="https://t.me/share/url?url=${self}&text=${encodeURIComponent(g.title)}">Telegram</a>`
+      ].join('');
+    }
+
+    function legendSrc(){ return `
+<!doctype html><meta charset=utf-8>
+<style>html,body{margin:0;background:#0b1220;color:#cde;}</style>
+<canvas id=c></canvas>
+<script>
+const c=document.getElementById('c'),x=c.getContext('2d');let W=900,H=520;c.width=W;c.height=H;
+let p={x:W/2,y:H/2,vx:0,vy:0};let k={};onkeydown=e=>k[e.key]=1;onkeyup=e=>k[e.key]=0;
+let mobs=[...Array(10)].map(()=>({x:Math.random()*W,y:Math.random()*H,c:'#93c5fd'}));
+function step(){
+  p.vx=(k['a']||k['ArrowLeft']?-2:0)+(k['d']||k['ArrowRight']?2:0);
+  p.vy=(k['w']||k['ArrowUp']?-2:0)+(k['s']||k['ArrowDown']?2:0);
+  p.x=Math.max(10,Math.min(W-10,p.x+p.vx)); p.y=Math.max(10,Math.min(H-10,p.y+p.vy));
+  x.fillStyle='#0b1220'; x.fillRect(0,0,W,H);
+  mobs.forEach(m=>{ m.x+=(p.x-m.x)*.01; m.y+=(p.y-m.y)*.01; x.fillStyle=m.c; x.beginPath(); x.arc(m.x,m.y,10,0,7); x.fill();});
+  x.fillStyle='#22d3ee'; x.beginPath(); x.arc(p.x,p.y,12,0,7); x.fill();
+  requestAnimationFrame(step);
+}
+step();
+<\/script>`;}
+
+    function arenaSrc(){ return `
+<!doctype html><meta charset=utf-8>
+<style>html,body{margin:0;background:#0
