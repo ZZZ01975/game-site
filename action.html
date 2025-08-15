@@ -10,29 +10,40 @@
 <body>
   <div class="container">
 
-    <!-- 导航自动插入 -->
+    <!-- 导航由 nav.js 自动插入 -->
 
-    <div class="card"><h1>动作</h1><p class="muted">动作类游戏列表</p></div>
+    <div class="card"><h1>动作</h1><p class="muted">动作类游戏列表（从数据自动渲染）</p></div>
 
     <div class="card">
-      <div class="grid">
-        <a class="game-card" href="games/arena.html">
-          <img loading="lazy" src="https://images.unsplash.com/photo-1511512578047-dfb367046420?auto=format&fit=crop&w=1200&q=60" alt="">
-          <h3>勇者竞技场（内置演示）</h3>
-          <div class="muted">追随敌人 · 斩击特效 · 可玩演示</div>
-        </a>
-      </div>
+      <div class="grid" id="action-list"><div class="muted">加载中…</div></div>
     </div>
 
     <div class="footer">© 2025 US Game Hub</div>
   </div>
 
+  <!-- 统一导航 -->
   <script src="assets/nav.js"></script>
-  <button id="backTop" style="position:fixed;right:18px;bottom:24px;display:none;background:#2b74ff;border:none;color:#fff;padding:10px 14px;border-radius:999px;box-shadow:0 8px 20px rgba(43,116,255,.35);cursor:pointer">↑ 顶部</button>
+
+  <!-- 分类页渲染（动作） -->
   <script>
-    const bt=document.getElementById('backTop');
-    window.addEventListener('scroll',()=>{ bt.style.display = window.scrollY>300 ? 'block':'none'; });
-    bt.addEventListener('click',()=>window.scrollTo({top:0,behavior:'smooth'}));
+    (async function(){
+      try{
+        const res = await fetch('data/games.json');
+        const list = await res.json();
+        const items = list.filter(g => g.category === '动作');
+        const grid = document.getElementById('action-list');
+        if(!items.length){ grid.innerHTML = '<div class="muted">暂无上架</div>'; return; }
+        grid.innerHTML = items.map(g => `
+          <a class="game-card" href="game.html?id=${g.id}">
+            <img loading="lazy" src="${g.cover}" alt="">
+            <h3>${g.title}</h3>
+            <div class="muted">${(g.tags||[]).join(' · ')}</div>
+          </a>
+        `).join('');
+      }catch(e){
+        document.getElementById('action-list').innerHTML = '<div class="muted">加载失败，请刷新重试</div>';
+      }
+    })();
   </script>
 </body>
 </html>
