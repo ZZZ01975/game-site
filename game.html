@@ -6,6 +6,10 @@
   <title>游戏 - US Game Hub</title>
   <link rel="icon" href="favicon.svg" type="image/svg+xml"/>
   <link rel="stylesheet" href="assets/style.css"/>
+  <style>
+    .err{color:#fca5a5;margin-top:8px}
+    .muted a{color:inherit;text-decoration:underline}
+  </style>
 </head>
 <body>
   <div class="container">
@@ -16,8 +20,11 @@
     <div class="card">
       <h1 id="title">加载中…</h1>
       <p class="muted" id="desc"></p>
+
       <div class="canvas-wrap" id="wrap"></div>
       <div id="fallback" class="muted" style="margin-top:8px"></div>
+      <div id="error" class="err"></div>
+
       <div class="share" id="share" style="margin-top:10px"></div>
       <div class="muted" id="tags" style="margin-top:8px"></div>
     </div>
@@ -30,10 +37,47 @@
     async function main(){
       const params = new URLSearchParams(location.search);
       const id = params.get('id');
-      const res = await fetch('data/games.json');
-      const list = await res.json();
-      const g = list.find(x=>x.id===id);
+      const errBox = document.getElementById('error');
 
+      if(!id){
+        setError('URL 中缺少 id 参数，例如：game.html?id=legend');
+        return;
+      }
+
+      try{
+        // 防缓存：给 JSON 加时间戳
+        const res = await fetch('data/games.json?v=' + Date.now(), {cache:'no-store'});
+        if(!res.ok){
+          setError('读取 data/games.json 失败：HTTP ' + res.status);
+          return;
+        }
+        let list;
+        try{
+          list = await res.json();
+        }catch(parseErr){
+          setError('data/games.json 不是合法 JSON：' + parseErr.message);
+          return;
+        }
+
+        const g = Array.isArray(list) ? list.find(x=>x.id===id) : null;
+        if(!g){
+          setError('在 games.json 中未找到 id="' + id + '" 的游戏。请确认 JSON 是否包含该条目。');
+          return;
+        }
+
+        render(g);
+      }catch(e){
+        setError('加载异常：' + e.message);
+      }
+
+      function setError(msg){
+        document.getElementById('title').textContent = '加载失败';
+        errBox.textContent = msg;
+        console.error('[game.html]', msg);
+      }
+    }
+
+    function render(g){
       const title = document.getElementById('title');
       const desc = document.getElementById('desc');
       const wrap = document.getElementById('wrap');
@@ -41,8 +85,6 @@
       const crumb = document.getElementById('breadcrumb');
       const share = document.getElementById('share');
       const fallback = document.getElementById('fallback');
-
-      if(!g){ title.textContent='未找到该游戏'; return; }
 
       title.textContent = g.title;
       desc.textContent = g.type==='canvas'
@@ -52,7 +94,9 @@
 
       // 可玩区域
       if(g.type==='iframe' && g.iframe){
-        wrap.innerHTML = `<iframe id="gameframe" src="${g.iframe}" referrerpolicy="no-referrer" sandbox="allow-scripts allow-same-origin"></iframe>`;
+        wrap.innerHTML = `<iframe id="gameframe" src="${g.iframe}"
+           referrerpolicy="no-referrer"
+           sandbox="allow-scripts allow-same-origin"></iframe>`;
         // 兜底：给出“新窗口打开”链接
         const a = document.createElement('a');
         a.href = g.iframe; a.target = '_blank';
@@ -98,4 +142,22 @@ step();
 
     function arenaSrc(){ return `
 <!doctype html><meta charset=utf-8>
-<style>html,body{margin:0;background:#0
+<style>html,body{margin:0;background:#0b1220;color:#cde;}</style>
+<canvas id=c></canvas>
+<script>
+const c=document.getElementById('c'),x=c.getContext('2d');let W=900,H=520;c.width=W;c.height=H;
+let hero={x:W/2,y:H/2}; let mobs=[...Array(8)].map(()=>({x:Math.random()*W,y:Math.random()*H}));
+function step(){
+  x.fillStyle='#0b1220';x.fillRect(0,0,W,H);
+  mobs.forEach(m=>{ m.x+=(hero.x-m.x)*.01; m.y+=(hero.y-m.y)*.01; x.fillStyle='#60a5fa'; x.beginPath(); x.arc(m.x,m.y,12,0,7); x.fill();});
+  x.fillStyle='#34d399'; x.beginPath(); x.arc(hero.x,hero.y,14,0,7); x.fill();
+  requestAnimationFrame(step);
+}
+c.addEventListener('mousemove',e=>{ const r=c.getBoundingClientRect(); hero.x=e.clientX-r.left; hero.y=e.clientY-r.top;});
+step();
+<\/script>`;}
+
+    main();
+  </script>
+</body>
+</html>
