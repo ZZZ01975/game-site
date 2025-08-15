@@ -71,3 +71,7 @@ body{
   .nav{display:flex;flex-wrap:wrap;gap:8px}
   .canvas-wrap iframe{height:420px}
 }
+.share{display:flex;gap:10px;flex-wrap:wrap;margin-top:10px}
+.share a{font-size:12px;padding:6px 10px;border-radius:999px;background:#1b2440;color:#dfe7ff;text-decoration:none}
+.share a:hover{filter:brightness(1.15)}
+
