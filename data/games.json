@@ -1,0 +1,29 @@
+[
+  {
+    "id": "legend",
+    "title": "传奇 H5（内置演示）",
+    "cover": "https://images.unsplash.com/photo-1489723361716-6ce1f9fb9f66?w=800",
+    "tags": ["RPG", "H5"],
+    "category": "RPG",
+    "type": "canvas",
+    "iframe": null
+  },
+  {
+    "id": "arena",
+    "title": "勇者竞技场（内置演示）",
+    "cover": "https://images.unsplash.com/photo-1511512578047-dfb376c64f0a?w=800",
+    "tags": ["动作", "H5"],
+    "category": "动作",
+    "type": "canvas",
+    "iframe": null
+  },
+  {
+    "id": "myfirstgame",
+    "title": "示例：我的第一款游戏",
+    "cover": "https://images.unsplash.com/photo-1538481199705-c710c4e965fc?w=800",
+    "tags": ["休闲"],
+    "category": "休闲",
+    "type": "iframe",
+    "iframe": "https://example.com" 
+  }
+]
